@@ -1,0 +1,98 @@
+---
+title: "Future nlsr"
+author: "John C Nash and Nasir Bashir"
+date: "2025-02-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## A laundry list of possible improvements
+
+This version 2025-2-17 by JN
+
+## Tools to move between problem setup styles
+
+There are two main styles:
+
+- formula, as in nls(), minpack.lm::nlsLM and nlsr::nlxb()
+- functional, as in  minpack.lm::nls.lm and nlsr::nlfb()
+
+The syntax of nls() and nlsr::nlxb() is different. nlsr::wrapnlsr() allows
+nlxb() syntax to be used to output a class "nls" object. Also the code of
+wrapnlsr() shows how to use selfStart models (though more documentation 
+would be helpful). Moreover, the selfStart structure allows analytic Jacobian
+to be used (as per nlfb argument 'jacfn').
+
+TARGET: There is currently no convenient way to get a class 'nls' solution object
+from an nlsr::nlfb() style syntax, i.e., "resfn" and "jacfn". This would be 
+helpful so extended features for class 'nls' objects could be used. However, 
+resfn() and jacfn() do not require named parameters, so a documented plan to
+create such names (e.g. p_1, p_2, etc. as used for output of solutions) and to
+be able to use them. There are no doubt a number of stumbling blocks, as JN has
+yet to be able to smoothly switch from functional to formula syntax.
+
+## Measures of parameter dispersion and bias
+
+This has been suggested by a number of authors, and NB has expressed interest.
+'nls' class objects can yield profile plots and other useful results (though JN
+has almost no experience in so doing).
+
+TARGET: Add tools to generate some chosen measures of dispersion and bias as per
+Box 1971 and Hougaard 1985 (??add full refs).
+
+TARGET: Add indicators that suggest when traditional (so-called large sample or
+asymptotic) dispersion measures are inappropriate. For example, the Nash "tilt",
+which is a per-parameter slope of the loss function (it applies to more than
+sum of squares problems) for symmetric small steps from the supposed minimum
+along parameter axes. The slope should be zero for symmetric loss functions.
+There are likely other simple indicators that could be found.
+
+250318: We'll try to find 2 (Hobbs + ???) examples to provide a basis for testing.
+
+Candidate bias and dispersion approaches:
+  - Box 1971 and Hougaard 1985 ideas. Updates?
+  - Resampling ideas? 
+  
+
+## Programming approach
+
+nlsr is programmed in a "just in time" manner. Calculations do not happen until
+they are needed. Moreover, they can be performed more or less independently.
+
+nls() sets up a "model.frame(formula, ...)" which returns a data frame with
+all variables needed to use the formula and the ... arguments. For nls() this 
+is particularly rich, but also very constraining, since this "model" contains
+the particular algorithm used for estimating the nonlinear parameters. This
+algorithm is unfortunately NOT stabilized, and the stabilized i.e., Marquardt
+like method may have features that conflict with some of the follow-on features
+of nls(). JN believes it would be useful to try to determine some of the 
+dependencies, and possibly to work out how to disentangle them, as they are
+a potential source of maintenance difficulties.
+
+TARGET: 
+- documentation of programming, particularly where this helps future maintainers
+- list of dependencies or "danger zones" 
+
+## Didactic or supportive tools
+
+TARGET: Tools to aid novice users to build nonlinear models. 
+
+The vignettes include a lot of information:
+
+- sometimes too much detail
+- not easy to quickly find information desired (this applies to nls() too)
+- some material out of date, but useful historically
+
+It would be valuable to the R community to 
+
+- edit historical / developmental material
+- restructure / recombine vignette information as needed to remove extraneous
+material and provide better indexing
+- TARGET: provide tool(s) to guide users through the process of setting up 
+model and data and then call the different estimation and examination functions.
+Ideally a script would be saved to allow future re-run or modification.
+
