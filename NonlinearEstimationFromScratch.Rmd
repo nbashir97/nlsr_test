@@ -24,17 +24,18 @@ approximate is open to debate.
 As I started to read some of the papers on measures of bias for nonlinear parameters,
 for example, @box1971bias, @Hougaard1982Parameterizations, @Hougaard1985Asymptotic, 
 I was discouraged by the need
-to make a number of assumptions I consider to be tenuous and the truly Byzantine
-notation used by most authors.
+to make a number of assumptions I consider to be tenuous. Also, I found the 
+truly Byzantine notation used by most authors to be daunting.
 
 In a pleasant (jazz) concert given in a local church on a Sunday afternoon, my
 thoughts coalesced into a moderately organized blob. This article is an attempt
 to delineate those thoughts, hopefully in a way that is useful to me and to others.
 
 In advance, I will apologize for the notation used. I have aimed for simplicity
-in symbols and, where possible, avoided Greek symbols, special letter markings, super- and sub-scripts 
-and other notations that are awkward to enter and print. This is certain to offend at least
-one group of workers. I nevertheless hope my exposition is readable.
+in symbols and mostly have avoided Greek, special letter markings, super- and sub-scripts 
+and other notations that are awkward to enter from a keyboard efficiently. 
+This is certain to offend at least one group of workers. I nevertheless hope my 
+exposition is readable.
 
 ## What is model estimation?
 
@@ -47,10 +48,12 @@ All modelling starts with some data and some metadata. Let us denote our
 collection of data as $M$. The metadata will, for the moment, be labelled as
 `story`. It may appear in various guises, many of which are non-mathematical.
 I tend to think of $M$ as a table of numbers and text with rows being observations
-and columns being quantities observed. Sometimes we call these **variables**, but
-some of the columns may be tags that are, in fact, part of the metadata. One of
+and columns being quantities observed. Sometimes we call these columns **variables**, but
+some of them may be tags that are, in fact, part of the metadata. One of
 the most common situations has a column of $M$, call it $m$, as the quantity we
-wish to predict, or model, based on one or several of the other columns.
+wish to predict, or model, based on one or several of the other columns. There
+are various names applied. $m$ is sometimes called the "dependent" variable, or
+the "explained" variable. The others are sometimes calle "independent" or "explanatory".
 
 We ideally (including here) presume that there is a set of true data $T$ and
 some true but unknown function $F_{true}$ of some true but unknown parameters
@@ -65,7 +68,8 @@ the **variables** in $M$ if we knew $T$.
 
 We will assume that data is observed or measured by some process. Hopefully we
 can document the process so that we can eventually uncover deficiencies in the
-process or mistakes in its application.
+process or mistakes in its application. Notes on the process form part of the 
+`story`. Sadly such notes are rarely complete or even present at all.
 
 ### What we don't know (can hurt us)
 
@@ -87,7 +91,7 @@ If we presume some process $P()$ that carries out measurements, then
 $$ m = P(t)$$
 Statisticians like to make the very helpful assumption that $P()$ is such that 
 the errors are **independently and identically distributed**. They (including
-I) almost always assume that the center, generally the mean, of the distribution
+myself) almost always assume that the center, generally the mean, of the distribution
 is 0. We write
 
 $$ e \sim D({parameters})$$
@@ -101,7 +105,10 @@ All this is very nice, but ...
 
 In most real-world situations, especially those involving human behaviour, there
 is no reason to think errors conveniently distribute themselves according to a
-Gaussian distribution.
+Gaussian distribution. There are, of course, some situations where ideas based
+on the the Central Limit Theorem (??ref) can be used to support the Gaussian 
+assumption, but there is a good case that the assumption is made much more
+often than it can be well-supported.
 
 ### The errors may not be independently distributed
 
@@ -109,7 +116,7 @@ In many cases we may expect errors to have properties that are linked to one or
 more of the columns of $M$, or to something we have not observed at all. They
 may also be linked to each other in some way. For example, a big error at one
 time point may imply a big error in the next few. This is serial correlation,
-but that is but one possible pattern.
+but that is just one possible situation.
 
 ### Errors may be the result of perfidy
 
@@ -122,8 +129,8 @@ Statistics Canada series of death and morbidity data was corrupted by an
 over-zealous clerk who tagged observations incorrectly out of misplaced moral 
 fervour against drinking. The mis-recording was noted **after** the raw data 
 sheets had been destroyed. I recall the tagging attributed deaths and 
-injuries to driving while under the influence of alcohol when there was not
-actual documentation of this.
+injuries to driving while under the influence of alcohol when there was any
+documentation of alcohol use.
 
 ### Errors may be the result of sloppy work or programming
 
@@ -132,7 +139,8 @@ Economist Statistician with Agriculture Canada. Soon after I arrived, my
 keyboarding skills were dragooned one Sunday afternoon to assist with a
 panic effort to get results from an econometric model. This was the age
 of Fortran and punched cards, and I was salaried, whereas keypunch clerks
-were wage employees with a "triple time on Sunday" clause. 
+were wage employees with a "triple time on Sunday" clause. I was cheaper,
+and no requisition had to be completed either.
 
 After entering 20 numbers of a time series, I refused to continue without an
 explanation of the data source, since I could demonstrate that there was only
@@ -142,10 +150,10 @@ a 1 in $10^8$ chance the data was not corrupted. My reasoning was as follows:
 - The change of this happening at random are $0.4^{20}$ for 20 entries.
 - I knew that $log_{10}(4) \approx 0.6021$ (This knowledge was surely an
   artifact of being educated before electronic calculators were available.
-  At the time I knew a fair number of entries in log tables.)
+  At the time I knew by memory several key entries in log tables.)
 - $20 * 0.6 + 20 * (-1) = -8$ is a good approximation to $log(0.4^{20}) \approx -7.9588$
 
-It turned out the data were data converted from annual to quarterly figures and
+It turned out the data were converted from annual to quarterly figures and
 "rounded" (always upwards) to 1 decimal. This explains but does not 
 necessarily excuse the use of such data, or the preparation of a quarterly
 time series from annual data in the way that was used.
@@ -180,6 +188,8 @@ produce $M$.
 
 ## Components of error
 
+Let us detail the main contributions to error in $M$:
+
 - random distributional errors in the measurement process
 - systematic errors in the measurement process, either by poor design
 or "perfidy"
@@ -197,7 +207,7 @@ In order to model data we need
 
 - a model form, generally in the form of mathematical functions, though possibly
   expressed in the form of an algorithm or computer program
-- some parameters that modify the particular value of the computed model
+- some parameters or controls that modify the particular value of the computed model
 
 There are a number of methods used to estimate models, of which the two major
 themes are
@@ -213,18 +223,21 @@ analytically. In these methods I include neural networks and similar filters.
 ### Issues in parameter estimation
 
 The issue that I believe is the most troublesome in statistical modelling is that
-of the choice of the model form. This may not be critical is we want only to provide
+of the choice of the model form. This may not be critical if we want only to provide
 a useful short-hand summary of the data, that is, if we only want some low-storage
 way to generate the observed data quickly to within some tolerance. This is akin
 to the interpolation tools used to compute values for transcendental functions 
 by use of polynomial or rational functions. In such cases, most of the additional
 statistical machinery concerning the possible error in the estimates is not 
-usually relevant. 
+particularly relevant. The goal -- sometimes actually a specification -- is that
+the absolute or relative difference between the actual function and its approximation 
+is smaller than some given tolerance. Moreover, the specification will often be
+stated to apply only for a specific domain of inputs.
 
 On the other hand, extrapolating a linear model of a process that is exponential
 will soon get us into big trouble. The model may possibly be useful for some
-applications over the range and domain of the data used in the estimation. It may be 
-dangerous to apply outside of this domain.
+applications over the range and domain of the data used in the estimation. It will
+likely be dangerous to apply outside of this domain.
 
 Assuming we have a model form that is appropriate -- and there may be more than 
 one form for a given situation -- we then must deal with some other matters.
@@ -237,11 +250,11 @@ not use models where the design matrix is singular, are frequently blind to
 this possibility. Yet even for linear modelling it is possible to compute models
 that fit the data but are not unique. Tools (e.g., the singular value decomposition)
 have made it possible to compute such models safely for over half a century. The
-difficulty is not in the fit but in the understanding of the meaning of the 
+difficulty is not in the fit but in understanding of the meaning of the 
 parameter values.
 
 In nonlinear modelling, understanding the parameter meaning is already demanding.
-Here, it is often less obvious that there are multiple minima, and they may not
+Here it is often less obvious that there are multiple minima, and they may not
 have equivalent fit (that is, the loss function or deviation between model and
 data may not be the same for the different local minima).
 
@@ -256,7 +269,11 @@ defined for positive values.
 Statistical methods have traditionally avoided the application of constraints. 
 It is my view that the general approach is to carry out modelling or estimation
 and then see if the constraints are satisfied -- a "keep fingers crossed" 
-approach.
+approach. This is often acceptable. However, I was once asked to calculate a
+fairly simple linear model as a favour to some associates. I was not told 
+anything about the data. When they got the results (by old-fashioned post, as
+this pre-dated email), they complained that the parameters were such that 
+the number of grain elevators in Saskatchewan was modelled as negative. 
 
 #### Algorithms and Stabilizations
 
@@ -268,7 +285,7 @@ impossible to substitute other algorithms. Thus `nls()` in R uses a fairly
 simple Gauss-Newton algorithm. We have pointed out several deficiencies in
 this approach (@nashbhattacharjee2024), but a rich set of accompanying tools
 is available. So far we have not found a satisfactory way to substitute a
-stabilized (that is, using ideas of @marquardt1963) algorithms to avoid some
+stabilized algorithms (that is, using ideas of @marquardt1963) to avoid some
 of the unnecessary "singular gradient" error messages. 
 
 Our own `nlsr` package (@nlsr2019manual) uses stabilizations and, moreover, tries
@@ -278,7 +295,7 @@ matrix.
 A further algorithmic issue is that tools may be designed to compute a large
 and flexible infrastructure, then call parts of this as needed. This is the 
 `nls()` approach. By contrast, `nlsr` employs a "just in time" philosophy.
-In this situation, we have found these two viewpoints do not mesh well.
+We have found these two viewpoints do not mesh well for program development.
 
 #### Programming choices (tolerances and similar needs)
 
@@ -294,8 +311,9 @@ have found it important to try to avoid providing fixed tolerances. Unfortunatel
 floating point numbers can be awkward to compare, particularly if they are very 
 small or very big. An alternative which I prefer, though it is by no means a
 panacea, is to compare two numbers after adding some "offset" value such as 100.
-This is still far from perfect, but does avoid some issues, though it may cause
-programs to keep trying to improve parameter values to seek minima or maxima much
+This is still far from perfect, but does avoid some of the issues from fixed 
+tolerance, though it may cause programs to keep trying to improve the estimation
+loss function by making tiny changes to parameters much
 longer than is truly necessary.  It is worth remembering that
 
     Algorithms converge but programs terminate
@@ -310,7 +328,7 @@ residual sum of squares. However, it is worth remembering that we usually have
 minimized this quantity with respect to the model parameters. This means the
 minimization process will have "chased" large individual errors in data, if
 they are present, thereby distorting the model. Nevertheless, we will still
-used the residual sum of squares as the basis for estimates of error around
+use the residual sum of squares as the basis for estimates of error around
 the proposed model, that is, form and particular parameters.
 
 We note that our estimates of the variance or standard deviation around a model may be 
@@ -321,22 +339,23 @@ where `n` is the sample size. (https://en.wikipedia.org/wiki/Bias_of_an_estimato
 ## Estimation of variation in model parameters
 
 It is traditional to try to provide "standard error" values for parameters, and
-hence suggest t-values for the parameters to judge their reliability. Truthfully,
-for nonlinear models, it is misguided to trust such quantities too far.
+hence to suggest t-values for the parameters to judge their reliability. Truthfully,
+for nonlinear models, it is misguided to use such calculated values as more than
+a very tenuous guide.
 
-These t-values depend on 
+The reason for caution is that these t-values depend on 
 
 - the model form being correct
 
 - systematic or mistake errors being "small" and therefore
-  capbable of being ignored
+  capable of being ignored
   
 - being able to solve / transform the measures of variation around the model
   into distributions around the proposed parameter values.
   
 This last issue relates to using the Jacobian in place of the linear modelling 
 design matrix X and being able to assume that we can make a linear approximation
-"near" to the proposed set of parameters.  (?? a reference here would be useful)
+"near" to the proposed set of parameters.  (?? I'd really like a useful reference here)
 
 Carrying the process further, we may want to consider measures of quality for 
 the variance of the parameter estimates. This is where this article started,
@@ -353,7 +372,7 @@ errors or mistakes.
 
 Given that getting the wrong model form could be a disaster, especially if we 
 want to extrapolate outside the data domain, consideration of tests for the wrong
-form would be useful. This exercise will be made more difficult by the power of
+model form would be useful. This exercise will be made more difficult by the power of
 optimization techniques to "pull" the false model towards the data.
 
 ?? ideas
@@ -374,9 +393,9 @@ The two common classes of failures in the iid assumption are
   the data.
 
 If we believe that the model form is correct, then the residuals should allow us
-to use known approaches to explore these violations of assumptions.
-
-?? Durbin-Watson, ?? others
+to use known approaches to explore these violations of assumptions. Tools such
+as the Durbin-Watson test, though commonly associated with linear models, 
+should still work with residuals from nonlinear models. (?? others)
 
 
 ### Testing for shape of error distribution
@@ -397,6 +416,11 @@ detection schemes are almost always customized to the situation at hand,
 for example, the "last digit" approach above, even if the underlying 
 principle is to look for unlikely patterns in the data or residuals.
 
+Note that mistakes or systematic errors will pollute attempts to use
+resampling approaches to finding information about the error distribution.
+
+## Resampling approaches
+
 We may be able to take advantage of resampling methods (https://en.wikipedia.org/wiki/Resampling_(statistics)). Generally, these
 methods assume the data is "correct", but outliers in estimated models may
 suggest errors in some data values, though they are only a beginning of 
@@ -405,12 +429,10 @@ a full diagnosis.
 ?? how to extend
 
 
-
-
-
 ## Discussion
 
 ?? Summarize key ideas
+
 
 
 
